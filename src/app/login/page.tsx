@@ -13,7 +13,7 @@ export default function LoginPage() {
     await signIn('credentials', {
       username,
       password,
-      callbackUrl: '/'
+      callbackUrl: '/dashboard'
     });
   };
 

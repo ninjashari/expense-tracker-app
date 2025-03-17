@@ -1,6 +1,24 @@
-import Link from 'next/link';
+'use client';
 
-export default function DashboardPage() {
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { useEffect } from 'react';
+
+export default function HomePage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === 'authenticated') {
+      router.push('/dashboard');
+    }
+  }, [status, router]);
+
+  if (status === 'loading') {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-800 to-purple-900">
       <nav className="bg-white/10 backdrop-blur-sm">
