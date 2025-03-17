@@ -10,8 +10,7 @@ export interface IAccount extends Document {
   currency: string;
   notes?: string;
   accountNumber?: string;
-  minimumBalance: number;
-  currentBalance: number;
+  minimumBalance?: number;
   creditLimit?: number;
   interestRate?: number;
   paymentDueDate?: Date;
@@ -68,12 +67,6 @@ const AccountSchema = new Schema<IAccount>(
     },
     minimumBalance: {
       type: Number,
-      required: true,
-      default: 0,
-    },
-    currentBalance: {
-      type: Number,
-      required: true,
       default: 0,
     },
     creditLimit: {

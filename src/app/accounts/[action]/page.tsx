@@ -18,8 +18,7 @@ interface AccountFormData {
   currency: string;
   notes?: string;
   accountNumber?: string;
-  minimumBalance: number;
-  currentBalance: number;
+  minimumBalance?: number;
   creditLimit?: number;
   interestRate?: number;
   paymentDueDate?: string;
@@ -48,7 +47,6 @@ export default function AccountForm({ params }: Props) {
     openingDate: new Date().toISOString().split('T')[0],
     currency: 'INR',
     minimumBalance: 0,
-    currentBalance: 0,
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -89,236 +87,223 @@ export default function AccountForm({ params }: Props) {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">{isEdit ? 'Edit Account' : 'Add New Account'}</h1>
+    <div className="min-h-screen bg-gradient-to-br from-purple-800 to-purple-900">
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold mb-8 text-white">{isEdit ? 'Edit Account' : 'Add New Account'}</h1>
 
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-          {error}
-        </div>
-      )}
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            {error}
+          </div>
+        )}
 
-      <form onSubmit={handleSubmit} className="bg-white shadow rounded-lg p-6 space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Account Name *
-            </label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-              className="w-full px-3 py-2 border rounded-lg"
-            />
+        <form onSubmit={handleSubmit} className="bg-white/10 backdrop-blur-sm shadow rounded-lg p-6 space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-purple-100 mb-2">
+                Account Name *
+              </label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+                className="w-full px-3 py-2 bg-white/5 border border-purple-300/20 rounded-lg text-white placeholder-purple-200/50 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-purple-100 mb-2">
+                Account Type *
+              </label>
+              <select
+                name="type"
+                value={formData.type}
+                onChange={handleChange}
+                required
+                className="w-full px-3 py-2 bg-white/5 border border-purple-300/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+              >
+                {ACCOUNT_TYPES.map(type => (
+                  <option key={type} value={type} className="bg-purple-900">
+                    {type.charAt(0).toUpperCase() + type.slice(1)}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-purple-100 mb-2">
+                Status *
+              </label>
+              <select
+                name="status"
+                value={formData.status}
+                onChange={handleChange}
+                required
+                className="w-full px-3 py-2 bg-white/5 border border-purple-300/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+              >
+                {ACCOUNT_STATUS.map(status => (
+                  <option key={status} value={status} className="bg-purple-900">
+                    {status.charAt(0).toUpperCase() + status.slice(1)}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-purple-100 mb-2">
+                Initial Balance *
+              </label>
+              <input
+                type="number"
+                name="initialBalance"
+                value={formData.initialBalance}
+                onChange={handleChange}
+                required
+                className="w-full px-3 py-2 bg-white/5 border border-purple-300/20 rounded-lg text-white placeholder-purple-200/50 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-purple-100 mb-2">
+                Opening Date *
+              </label>
+              <input
+                type="date"
+                name="openingDate"
+                value={formData.openingDate}
+                onChange={handleChange}
+                required
+                className="w-full px-3 py-2 bg-white/5 border border-purple-300/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-purple-100 mb-2">
+                Currency *
+              </label>
+              <input
+                type="text"
+                name="currency"
+                value={formData.currency}
+                onChange={handleChange}
+                required
+                className="w-full px-3 py-2 bg-white/5 border border-purple-300/20 rounded-lg text-white placeholder-purple-200/50 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-purple-100 mb-2">
+                Account Number
+              </label>
+              <input
+                type="text"
+                name="accountNumber"
+                value={formData.accountNumber || ''}
+                onChange={handleChange}
+                className="w-full px-3 py-2 bg-white/5 border border-purple-300/20 rounded-lg text-white placeholder-purple-200/50 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-purple-100 mb-2">
+                Minimum Balance
+              </label>
+              <input
+                type="number"
+                name="minimumBalance"
+                value={formData.minimumBalance || ''}
+                onChange={handleChange}
+                className="w-full px-3 py-2 bg-white/5 border border-purple-300/20 rounded-lg text-white placeholder-purple-200/50 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-purple-100 mb-2">
+                Credit Limit
+              </label>
+              <input
+                type="number"
+                name="creditLimit"
+                value={formData.creditLimit || ''}
+                onChange={handleChange}
+                className="w-full px-3 py-2 bg-white/5 border border-purple-300/20 rounded-lg text-white placeholder-purple-200/50 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-purple-100 mb-2">
+                Interest Rate (%)
+              </label>
+              <input
+                type="number"
+                name="interestRate"
+                value={formData.interestRate || ''}
+                onChange={handleChange}
+                step="0.01"
+                className="w-full px-3 py-2 bg-white/5 border border-purple-300/20 rounded-lg text-white placeholder-purple-200/50 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-purple-100 mb-2">
+                Payment Due Date
+              </label>
+              <input
+                type="date"
+                name="paymentDueDate"
+                value={formData.paymentDueDate || ''}
+                onChange={handleChange}
+                className="w-full px-3 py-2 bg-white/5 border border-purple-300/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-purple-100 mb-2">
+                Minimum Payment
+              </label>
+              <input
+                type="number"
+                name="minimumPayment"
+                value={formData.minimumPayment || ''}
+                onChange={handleChange}
+                className="w-full px-3 py-2 bg-white/5 border border-purple-300/20 rounded-lg text-white placeholder-purple-200/50 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+            </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Account Type *
+            <label className="block text-sm font-medium text-purple-100 mb-2">
+              Notes
             </label>
-            <select
-              name="type"
-              value={formData.type}
+            <textarea
+              name="notes"
+              value={formData.notes || ''}
               onChange={handleChange}
-              required
-              className="w-full px-3 py-2 border rounded-lg"
+              rows={3}
+              className="w-full px-3 py-2 bg-white/5 border border-purple-300/20 rounded-lg text-white placeholder-purple-200/50 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            />
+          </div>
+
+          <div className="flex justify-end space-x-4">
+            <button
+              type="button"
+              onClick={() => router.push('/accounts')}
+              className="px-4 py-2 text-purple-100 hover:text-white"
             >
-              {ACCOUNT_TYPES.map(type => (
-                <option key={type} value={type}>
-                  {type.charAt(0).toUpperCase() + type.slice(1)}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Status *
-            </label>
-            <select
-              name="status"
-              value={formData.status}
-              onChange={handleChange}
-              required
-              className="w-full px-3 py-2 border rounded-lg"
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg disabled:opacity-50"
             >
-              {ACCOUNT_STATUS.map(status => (
-                <option key={status} value={status}>
-                  {status.charAt(0).toUpperCase() + status.slice(1)}
-                </option>
-              ))}
-            </select>
+              {isLoading ? 'Saving...' : 'Save Account'}
+            </button>
           </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Initial Balance *
-            </label>
-            <input
-              type="number"
-              name="initialBalance"
-              value={formData.initialBalance}
-              onChange={handleChange}
-              required
-              className="w-full px-3 py-2 border rounded-lg"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Opening Date *
-            </label>
-            <input
-              type="date"
-              name="openingDate"
-              value={formData.openingDate}
-              onChange={handleChange}
-              required
-              className="w-full px-3 py-2 border rounded-lg"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Currency *
-            </label>
-            <input
-              type="text"
-              name="currency"
-              value={formData.currency}
-              onChange={handleChange}
-              required
-              className="w-full px-3 py-2 border rounded-lg"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Account Number
-            </label>
-            <input
-              type="text"
-              name="accountNumber"
-              value={formData.accountNumber || ''}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-lg"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Minimum Balance *
-            </label>
-            <input
-              type="number"
-              name="minimumBalance"
-              value={formData.minimumBalance}
-              onChange={handleChange}
-              required
-              className="w-full px-3 py-2 border rounded-lg"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Current Balance *
-            </label>
-            <input
-              type="number"
-              name="currentBalance"
-              value={formData.currentBalance}
-              onChange={handleChange}
-              required
-              className="w-full px-3 py-2 border rounded-lg"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Credit Limit
-            </label>
-            <input
-              type="number"
-              name="creditLimit"
-              value={formData.creditLimit || ''}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-lg"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Interest Rate (%)
-            </label>
-            <input
-              type="number"
-              name="interestRate"
-              value={formData.interestRate || ''}
-              onChange={handleChange}
-              step="0.01"
-              className="w-full px-3 py-2 border rounded-lg"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Payment Due Date
-            </label>
-            <input
-              type="date"
-              name="paymentDueDate"
-              value={formData.paymentDueDate || ''}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-lg"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Minimum Payment
-            </label>
-            <input
-              type="number"
-              name="minimumPayment"
-              value={formData.minimumPayment || ''}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-lg"
-            />
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Notes
-          </label>
-          <textarea
-            name="notes"
-            value={formData.notes || ''}
-            onChange={handleChange}
-            rows={3}
-            className="w-full px-3 py-2 border rounded-lg"
-          />
-        </div>
-
-        <div className="flex justify-end space-x-4">
-          <button
-            type="button"
-            onClick={() => router.push('/accounts')}
-            className="px-4 py-2 text-gray-600 hover:text-gray-800"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg disabled:opacity-50"
-          >
-            {isLoading ? 'Saving...' : 'Save Account'}
-          </button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   );
 } 
