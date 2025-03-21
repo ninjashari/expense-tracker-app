@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
+import { getServerSession } from 'next-auth/next';
 import Account from '@/models/Account';
 import { connectToDatabase } from '@/lib/db';
+import User from '@/models/User';
+import { authOptions } from "@/lib/auth";
 
 export async function GET() {
   try {
@@ -26,27 +28,24 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    if (!session?.user?.id) {
+      console.log("No user ID in session:", session); // For debugging
+      return NextResponse.json({ error: 'Unauthorized - No user ID' }, { status: 401 });
     }
 
     const data = await request.json();
-    await connectToDatabase();
-
-    const account = new Account({
+    const account = await Account.create({
       ...data,
-      userId: session.user.id,
+      userId: session.user.id
     });
 
-    await account.save();
-    
     return NextResponse.json(account, { status: 201 });
   } catch (error) {
     console.error('Error creating account:', error);
     return NextResponse.json(
-      { error: 'Failed to create account' },
+      { error: error instanceof Error ? error.message : 'Failed to create account' },
       { status: 500 }
     );
   }

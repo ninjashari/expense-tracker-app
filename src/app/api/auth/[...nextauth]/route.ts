@@ -48,6 +48,7 @@ const handler = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
+        token.id = user.id;
         token.username = user.username;
         token.firstName = user.firstName;
         token.lastName = user.lastName;
@@ -56,6 +57,7 @@ const handler = NextAuth({
     },
     async session({ session, token }) {
       if (token) {
+        session.user.id = token.id as string;
         session.user.username = token.username;
         session.user.firstName = token.firstName;
         session.user.lastName = token.lastName;

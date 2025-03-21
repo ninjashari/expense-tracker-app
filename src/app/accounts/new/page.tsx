@@ -15,7 +15,13 @@ export default function NewAccountPage() {
     initialBalance: '',
     currency: 'INR',
     openingDate: new Date().toISOString().split('T')[0],
-    minimumBalance: ''
+    minimumBalance: '',
+    notes: '',
+    accountNumber: '',
+    creditLimit: '',
+    interestRate: '',
+    paymentDueDate: '',
+    minimumPayment: ''
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -34,12 +40,16 @@ export default function NewAccountPage() {
         body: JSON.stringify({
           ...formData,
           initialBalance: parseFloat(formData.initialBalance),
-          minimumBalance: formData.minimumBalance ? parseFloat(formData.minimumBalance) : undefined
+          minimumBalance: formData.minimumBalance ? parseFloat(formData.minimumBalance) : undefined,
+          creditLimit: formData.creditLimit ? parseFloat(formData.creditLimit) : undefined,
+          interestRate: formData.interestRate ? parseFloat(formData.interestRate) : undefined,
+          minimumPayment: formData.minimumPayment ? parseFloat(formData.minimumPayment) : undefined
         }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to create account');
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to create account');
       }
 
       router.push('/accounts');
@@ -89,7 +99,7 @@ export default function NewAccountPage() {
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                    className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm text-gray-900"
                   />
                 </div>
               </div>
@@ -104,13 +114,29 @@ export default function NewAccountPage() {
                     name="type"
                     value={formData.type}
                     onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                    className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                    className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm bg-white text-gray-900"
                   >
-                    <option value="savings">Savings</option>
-                    <option value="checking">Checking</option>
-                    <option value="credit">Credit</option>
-                    <option value="investment">Investment</option>
+                    <option value="savings" className="bg-white text-gray-900">Savings</option>
+                    <option value="checking" className="bg-white text-gray-900">Checking</option>
+                    <option value="credit" className="bg-white text-gray-900">Credit</option>
+                    <option value="investment" className="bg-white text-gray-900">Investment</option>
                   </select>
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="accountNumber" className="block text-sm font-medium text-gray-700">
+                  Account Number (Optional)
+                </label>
+                <div className="mt-1">
+                  <input
+                    id="accountNumber"
+                    name="accountNumber"
+                    type="text"
+                    value={formData.accountNumber}
+                    onChange={(e) => setFormData({ ...formData, accountNumber: e.target.value })}
+                    className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm text-gray-900"
+                  />
                 </div>
               </div>
 
@@ -124,10 +150,10 @@ export default function NewAccountPage() {
                     name="status"
                     value={formData.status}
                     onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                    className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                    className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm bg-white text-gray-900"
                   >
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
+                    <option value="active" className="bg-white text-gray-900">Active</option>
+                    <option value="inactive" className="bg-white text-gray-900">Inactive</option>
                   </select>
                 </div>
               </div>
@@ -145,7 +171,7 @@ export default function NewAccountPage() {
                     required
                     value={formData.initialBalance}
                     onChange={(e) => setFormData({ ...formData, initialBalance: e.target.value })}
-                    className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                    className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm text-gray-900"
                   />
                 </div>
               </div>
@@ -162,10 +188,81 @@ export default function NewAccountPage() {
                     step="0.01"
                     value={formData.minimumBalance}
                     onChange={(e) => setFormData({ ...formData, minimumBalance: e.target.value })}
-                    className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                    className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm text-gray-900"
                   />
                 </div>
               </div>
+
+              <div>
+                <label htmlFor="interestRate" className="block text-sm font-medium text-gray-700">
+                  Interest Rate % (Optional)
+                </label>
+                <div className="mt-1">
+                  <input
+                    id="interestRate"
+                    name="interestRate"
+                    type="number"
+                    step="0.01"
+                    value={formData.interestRate}
+                    onChange={(e) => setFormData({ ...formData, interestRate: e.target.value })}
+                    className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm text-gray-900"
+                  />
+                </div>
+              </div>
+
+              {formData.type === 'credit' && (
+                <>
+                  <div>
+                    <label htmlFor="creditLimit" className="block text-sm font-medium text-gray-700">
+                      Credit Limit (Optional)
+                    </label>
+                    <div className="mt-1">
+                      <input
+                        id="creditLimit"
+                        name="creditLimit"
+                        type="number"
+                        step="0.01"
+                        value={formData.creditLimit}
+                        onChange={(e) => setFormData({ ...formData, creditLimit: e.target.value })}
+                        className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm text-gray-900"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label htmlFor="paymentDueDate" className="block text-sm font-medium text-gray-700">
+                      Payment Due Date (Optional)
+                    </label>
+                    <div className="mt-1">
+                      <input
+                        id="paymentDueDate"
+                        name="paymentDueDate"
+                        type="date"
+                        value={formData.paymentDueDate}
+                        onChange={(e) => setFormData({ ...formData, paymentDueDate: e.target.value })}
+                        className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm text-gray-900"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label htmlFor="minimumPayment" className="block text-sm font-medium text-gray-700">
+                      Minimum Payment (Optional)
+                    </label>
+                    <div className="mt-1">
+                      <input
+                        id="minimumPayment"
+                        name="minimumPayment"
+                        type="number"
+                        step="0.01"
+                        value={formData.minimumPayment}
+                        onChange={(e) => setFormData({ ...formData, minimumPayment: e.target.value })}
+                        className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm text-gray-900"
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
 
               <div>
                 <label htmlFor="currency" className="block text-sm font-medium text-gray-700">
@@ -177,12 +274,12 @@ export default function NewAccountPage() {
                     name="currency"
                     value={formData.currency}
                     onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
-                    className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                    className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm bg-white text-gray-900"
                   >
-                    <option value="INR">INR</option>
-                    <option value="USD">USD</option>
-                    <option value="EUR">EUR</option>
-                    <option value="GBP">GBP</option>
+                    <option value="INR" className="bg-white text-gray-900">INR</option>
+                    <option value="USD" className="bg-white text-gray-900">USD</option>
+                    <option value="EUR" className="bg-white text-gray-900">EUR</option>
+                    <option value="GBP" className="bg-white text-gray-900">GBP</option>
                   </select>
                 </div>
               </div>
@@ -199,7 +296,23 @@ export default function NewAccountPage() {
                     required
                     value={formData.openingDate}
                     onChange={(e) => setFormData({ ...formData, openingDate: e.target.value })}
-                    className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                    className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm text-gray-900"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="notes" className="block text-sm font-medium text-gray-700">
+                  Notes (Optional)
+                </label>
+                <div className="mt-1">
+                  <textarea
+                    id="notes"
+                    name="notes"
+                    rows={3}
+                    value={formData.notes}
+                    onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                    className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm text-gray-900"
                   />
                 </div>
               </div>

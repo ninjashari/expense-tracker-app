@@ -26,7 +26,7 @@ export default function Navbar() {
           </div>
           {session && (
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-600">{session.user?.email}</span>
+              <span className="text-sm text-gray-600">{session.user?.username}</span>
               <button
                 onClick={() => signOut({ callbackUrl: '/login' })}
                 className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200"
