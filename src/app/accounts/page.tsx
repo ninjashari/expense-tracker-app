@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Navbar from '@/components/Navbar';
 
 interface Account {
   _id: string;
@@ -71,65 +72,66 @@ export default function AccountsPage() {
 
   if (status === 'loading' || isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-800 to-purple-900 flex items-center justify-center">
-        <div className="text-white text-xl">Loading...</div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-gray-600 text-xl">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-800 to-purple-900">
+    <div className="min-h-screen bg-gray-50">
+      <Navbar />
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-white">Accounts</h1>
+          <h1 className="text-2xl font-semibold text-gray-900">Accounts</h1>
           <Link
             href="/accounts/new"
-            className="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200"
           >
             Add New Account
           </Link>
         </div>
 
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
             {error}
           </div>
         )}
 
-        <div className="bg-white/10 backdrop-blur-sm shadow rounded-lg overflow-hidden">
-          <table className="min-w-full divide-y divide-purple-300/20">
-            <thead className="bg-purple-900/50">
+        <div className="bg-white shadow-sm rounded-lg overflow-hidden border border-gray-100">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-purple-100 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Name
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-purple-100 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Type
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-purple-100 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-purple-100 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Balance
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-purple-100 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Currency
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-purple-100 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Opening Date
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-purple-100 uppercase tracking-wider">
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-purple-300/20">
+            <tbody className="bg-white divide-y divide-gray-200">
               {accounts.map((account) => (
-                <tr key={account._id} className="hover:bg-purple-900/20">
-                  <td className="px-6 py-4 whitespace-nowrap text-white">
+                <tr key={account._id} className="hover:bg-gray-50 transition-colors duration-200">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {account.name}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-white">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {account.type.charAt(0).toUpperCase() + account.type.slice(1)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -143,25 +145,25 @@ export default function AccountsPage() {
                       {account.status.charAt(0).toUpperCase() + account.status.slice(1)}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-white">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {account.currentBalance.toLocaleString()}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-white">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {account.currency}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-white">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {new Date(account.openingDate).toLocaleDateString()}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <Link
                       href={`/accounts/${account._id}`}
-                      className="text-pink-400 hover:text-pink-300 mr-4"
+                      className="text-indigo-600 hover:text-indigo-900 mr-4 transition-colors duration-200"
                     >
                       Edit
                     </Link>
                     <button
                       onClick={() => handleDelete(account._id)}
-                      className="text-red-400 hover:text-red-300"
+                      className="text-red-600 hover:text-red-900 transition-colors duration-200"
                     >
                       Delete
                     </button>
